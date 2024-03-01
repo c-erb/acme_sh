@@ -14,6 +14,9 @@ Here are some defaults that control behavior:
 
     acme_sh_autoupgrade: True
     acme_sh_server: letsencrypt
+    acme_sh_git_repository: https://github.com/acmesh-official/acme.sh.git
+    acme_sh_git_version: master
+    acme_sh_git_localdir: /usr/local/src/acme.sh
     acme_sh_notify: False
     acme_sh_logging: False
     acme_sh_keylength: 4096
