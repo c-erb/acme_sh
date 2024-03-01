@@ -1,12 +1,14 @@
 ---
 - name: Install git dependency
-  package:
+  become: true
+  ansible.builtin.package:
     update_cache: True
     name: git
     state: present
 
 - name: Create user to run acme.sh
-  user:
+  become: true
+  ansible.builtin.user:
     name: "{{ acme_sh_user }}"
     home: "{{ acme_sh_user_dir }}"
     system: True
@@ -14,16 +16,22 @@
     state: present
 
 - name: Set permissions on acme user home dir
-  file:
+  become: true
+  ansible.builtin.file:
     path: "{{ acme_sh_user_dir }}"
     mode: 0700
 
 - name: Clone acme.sh repository
+  become: true
+  ansible.builtin.git:
+    repo: "{{ acme_sh_git_repository }}"
+    dest: "{{ acme_sh_git_localdir }}"
     version: "{{ acme_sh_git_version }}"
   register: git
 
 - name: Allow acme.sh user to restart nginx
-  template:
+  become: true
+  ansible.builtin.template:
     src: letsencrypt_restart_nginx.j2
     dest: /etc/sudoers.d/letsencrypt_restart_nginx
     owner: root
@@ -31,23 +39,25 @@
     mode: 0440
 
 - name: Install acme.sh
-  command: >-
+  become: true
+  ansible.builtin.command: >-
     ./acme.sh --install
   args:
     chdir: /usr/local/src/acme.sh
     creates: "{{ acme_sh_dir }}/acme.sh"
-  become: yes
   become_user: "{{ acme_sh_user }}"
 
 - name: Enable acme.sh auto-upgrade
-  lineinfile:
+  become: true
+  ansible.builtin.lineinfile:
     path: "{{ acme_sh_dir }}/account.conf"
     regexp: "AUTO_UPGRADE="
     line: "AUTO_UPGRADE='1'"
   when: acme_sh_autoupgrade
 
 - name: Disable acme.sh auto-upgrade
-  lineinfile:
+  become: true
+  ansible.builtin.lineinfile:
     path: "{{ acme_sh_dir }}/account.conf"
     regexp: "AUTO_UPGRADE="
     line: "AUTO_UPGRADE='0'"
