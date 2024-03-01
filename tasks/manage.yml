@@ -1,5 +1,7 @@
 ---
 - name: Check if cert has been created
+  become: true
+  become_user: "{{ acme_sh_user }}"
   ansible.builtin.stat:
     path: "{{ acme_sh_dir }}/{{ acme_sh_first_subject }}/{{ acme_sh_first_subject }}.cer"
   register: cert
