@@ -3,7 +3,7 @@ acme_sh_user: letsencrypt
 acme_sh_group: letsencrypt
 acme_sh_git_repository: https://github.com/acmesh-official/acme.sh.git
 acme_sh_git_version: master
-acme_sh_git_localdir: 
+acme_sh_git_localdir: /usr/local/src/acme.sh
 acme_sh_user_dir: /var/lib/acme
 acme_sh_dir: /var/lib/acme/.acme.sh
 
