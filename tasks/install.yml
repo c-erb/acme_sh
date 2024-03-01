@@ -29,6 +29,13 @@
     version: "{{ acme_sh_git_version }}"
   register: git
 
+- name: Set correct permissions for acme.sh
+  become: true
+  ansible.builtin.file:
+    path: "{{ acme_sh_git_localdir }}"
+    mode: 'o+rx'
+    recurse: true
+
 - name: Allow acme.sh user to restart nginx
   become: true
   ansible.builtin.template:
@@ -45,14 +52,7 @@
   args:
     chdir: /usr/local/src/acme.sh
     creates: "{{ acme_sh_dir }}/acme.sh"
-
-- name: Set correct owner for acme.sh
-  become: true
-  ansible.builtin.file:
-    path: "{{ acme_sh_dir }}"
-    owner: "{{ acme_sh_user }}"
-    group: "{{ acme_sh_group }}"
-    recurse: true
+  become_user: "{{ acme_sh_user }}"
 
 - name: Enable acme.sh auto-upgrade
   become: true
