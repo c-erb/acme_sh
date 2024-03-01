@@ -45,7 +45,14 @@
   args:
     chdir: /usr/local/src/acme.sh
     creates: "{{ acme_sh_dir }}/acme.sh"
-  become_user: "{{ acme_sh_user }}"
+
+- name: Set correct owner for acme.sh
+  become: true
+  ansible.builtin.file:
+    path: "{{ acme_sh_dir }}"
+    owner: "{{ acme_sh_user }}"
+    group: "{{ acme_sh_group }}"
+    recurse: true
 
 - name: Enable acme.sh auto-upgrade
   become: true
@@ -53,6 +60,7 @@
     path: "{{ acme_sh_dir }}/account.conf"
     regexp: "AUTO_UPGRADE="
     line: "AUTO_UPGRADE='1'"
+  become_user: "{{ acme_sh_user }}"
   when: acme_sh_autoupgrade
 
 - name: Disable acme.sh auto-upgrade
@@ -61,4 +69,5 @@
     path: "{{ acme_sh_dir }}/account.conf"
     regexp: "AUTO_UPGRADE="
     line: "AUTO_UPGRADE='0'"
+  become_user: "{{ acme_sh_user }}"
   when: not acme_sh_autoupgrade
